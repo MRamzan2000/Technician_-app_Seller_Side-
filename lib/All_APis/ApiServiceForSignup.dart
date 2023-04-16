@@ -32,6 +32,7 @@ class  ApiServiceForSignup {
         Uri.parse(URL), headers: {"Content-Type": "application/json"},
         body: json.encode(body));
     final String res = response.body;
+    print(res);
     if (res != 'null') {
       try {
         final jsonData = json.decode(res) as Map<String, dynamic>;

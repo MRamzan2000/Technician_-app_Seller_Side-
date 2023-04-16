@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,25 @@ class _Active_OrdersState extends State<Active_Orders> {
   initState() {
     super.initState();
     initialize();
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      getCryptoPrice();
+    });
+  }
+
+  Future<void> getCryptoPrice() async{
+    OrderList dataModel = await ApiServiceForSellerOrders.sellerOrders() as OrderList;
+    setState(() {
+      orders_length=dataModel.orders.length;
+
+    });
+    _streamController.sink.add(dataModel);
+  }
+
+  StreamController<OrderList> _streamController = StreamController();
+  @override
+  void dispose() {
+    // stop streaming when app close
+    _streamController.close();
   }
 
   String? firstname;
@@ -39,7 +59,6 @@ class _Active_OrdersState extends State<Active_Orders> {
   String? type;
 
   void initialize() async {
-    OrderList orderList = await ApiServiceForSellerOrders.sellerOrders();
     final prefs = await SharedPreferences.getInstance();
     firstname = prefs.getString('firstname').toString();
     lastname = prefs.getString('lastname').toString();
@@ -60,6 +79,7 @@ class _Active_OrdersState extends State<Active_Orders> {
       print(e);
     }
   }
+  int orders_length=0;
 
   @override
   Widget build(BuildContext context) {
@@ -637,7 +657,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                     width: 25,
                     child: Center(
                         child: Text(
-                      "02",
+                      "${orders_length}",
                       style: TextStyle(fontSize: 8.5, color: Colors.white),
                     )),
                   ),
@@ -645,225 +665,221 @@ class _Active_OrdersState extends State<Active_Orders> {
               ),
             ),
             SizedBox(height: 20),
-            StreamBuilder(
-              stream: getOrderStream(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // While waiting for the data to load, show a progress bar
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasData) {
-                  final OrderList orders = snapshot.data!;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: orders.orders.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        // Extracting the date
-                        String date = orders.orders[index].date.toString().split(':')[0];
-                        String time = orders.orders[index].time.toString();
-                        time = time.split('.')[0];
+            StreamBuilder<OrderList>(
+              stream: _streamController.stream,
+              builder: (context,snapdata){
+                switch(snapdata.connectionState){
+                  case ConnectionState.waiting: return Center(child: CircularProgressIndicator(),);
+                  default: if(snapdata.hasError){
+                    return Text('Please Wait....');
+                  }else{
+                    print("{HELLO");
+                    final OrderList orders = snapdata.data!;
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: orders.orders.length,
+                        itemBuilder: (BuildContext context, int index) {
 
-                        // Build and return the list item
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Color(0xfffbceac),
-                                    border:
-                                    Border.all(color: Colors.white, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 2,
-                                          offset: Offset(1.0, 2.0))
-                                    ]),
-                                height: 100,
-                                width: MediaQuery.of(context).size.width / 4,
-                                child: SvgPicture.asset(
-                                  "assets/Fan.svg",
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 2,
-                                          offset: Offset(1.0, 2.0))
-                                    ]),
-                                height: 100,
-                                width: MediaQuery.of(context).size.width / 1.6,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 5),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              orders.orders[index].username.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.black),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(7),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color: Colors.grey,
-                                                        blurRadius: 3,
-                                                        offset: Offset(1.0, 2.0))
-                                                  ]),
-                                              height: 20,
-                                              width: 20,
-                                              child: SvgPicture.asset(
-                                                "assets/Iconly-Bold-Call.svg",
-                                                fit: BoxFit.scaleDown,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Split Unit   =",
-                                            style: TextStyle(
-                                                fontSize: 10, color: Colors.black),
-                                          ),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            '${orders.orders[index].amount.toString()} SR',
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                color: Color(0xffF89F5B)),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        "C-Block Johar Town near UMT\n ${date}  .  ${time}",
-                                        style: TextStyle(
-                                            fontSize: 10, color: Colors.grey),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              width: 70,
-                                              height: 15,
-                                              child: ElevatedButton(
-                                                  onPressed: () {
-                                                    if(orders.orders[index].status=="New"){
-                                                      ApiServiceForAcceptOrders.accept(orders.orders[index].id.toString()).then((value) => {
-                                                        if(value==true){
-                                                          print("ORDER ACCEPTED")
-                                                        }
-                                                        else{
-                                                          print("Not accepted")
-                                                        }
-                                                      });
-                                                    }
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                      primary: Color(0xff9C3587),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                              32))),
-                                                  child: Text(
-                                                    orders.orders[index].status=="New"?"Accept":"In Progress",
-                                                    style: TextStyle(
-                                                        fontSize: 9,
-                                                        color: Colors.white),
-                                                  )),
-                                            ),
-                                            orders.orders[index].status=="New"?SizedBox(
-                                              width: 100,
-                                              height: 25,
-                                              child: ElevatedButton(
-                                                  onPressed: () {
-                                                    if(orders.orders[index].status=="New"){
-                                                      ApiServiceForCancelOrders.cancel(orders.orders[index].id.toString()).then((value) => {
-                                                        if(value==true){
-                                                          print("ORDER Cancelled")
-                                                        }
-                                                        else{
-                                                          print("Not Cancelled")
-                                                        }
-                                                      });
-                                                    }
+                          String date = orders.orders[index].date.toString().split(':')[0];
+                          String time = orders.orders[index].time.toString();
+                          time = time.split('.')[0];
 
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                      primary: Color(0xffFFFFFF),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                              32))),
-                                                  child: Text(
-                                                    "Decline",
-                                                    style: TextStyle(
-                                                        fontSize: 9,
-                                                        color: Color(0xff9C3587)),
-                                                  )),
-                                            ):SizedBox(),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: AssetImage(
-                                                          "assets/home pic.jpg"),
-                                                      fit: BoxFit.cover),
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(7),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color: Colors.grey,
-                                                        blurRadius: 3,
-                                                        offset: Offset(1.0, 2.0))
-                                                  ]),
-                                              height: 20,
-                                              width: 20,
-                                            ),
-// Image.asset("assets/download-23.png",fit: BoxFit.scaleDown,height: 35,),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+// Build and return the list item
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Color(0xfffbceac),
+                                      border:
+                                      Border.all(color: Colors.white, width: 1.0),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 2,
+                                            offset: Offset(1.0, 2.0))
+                                      ]),
+                                  height: 100,
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  child: SvgPicture.asset(
+                                    "assets/Fan.svg",
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  // If there's an error or no data, display an appropriate message
-                  return Center(
-                    child: Text('No data found.'),
-                  );
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 2,
+                                            offset: Offset(1.0, 2.0))
+                                      ]),
+                                  height: 100,
+                                  width: MediaQuery.of(context).size.width / 1.6,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 5),
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                orders.orders[index].username.toString(),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black),
+                                              ),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(7),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Colors.grey,
+                                                          blurRadius: 3,
+                                                          offset: Offset(1.0, 2.0))
+                                                    ]),
+                                                height: 20,
+                                                width: 20,
+                                                child: SvgPicture.asset(
+                                                  "assets/Iconly-Bold-Call.svg",
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Split Unit   =",
+                                              style: TextStyle(
+                                                  fontSize: 10, color: Colors.black),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              '${orders.orders[index].amount.toString()} SR',
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xffF89F5B)),
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          "C-Block Johar Town near UMT\n ${date}  .  ${time}",
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.grey),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: 80,
+                                                height: 20,
+                                                child: ElevatedButton(
+                                                    onPressed: () {
+                                                      if(orders.orders[index].status=="New"){
+                                                        ApiServiceForAcceptOrders.accept(orders.orders[index].id.toString()).then((value) => {
+                                                          if(value==true){
+                                                            print("ORDER ACCEPTED")
+                                                          }
+                                                          else{
+                                                            print("Not accepted")
+                                                          }
+                                                        });
+                                                      }
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        primary: Color(0xff9C3587),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                                32))),
+                                                    child: Text(
+                                                      orders.orders[index].status=="New"?"Accept":"In Progress",
+                                                      style: TextStyle(
+                                                          fontSize: 9,
+                                                          color: Colors.white),
+                                                    )),
+                                              ),
+                                              orders.orders[index].status=="New"?SizedBox(
+                                                width: 80,
+                                                height: 20,
+                                                child: ElevatedButton(
+                                                    onPressed: () {
+                                                      if(orders.orders[index].status=="New"){
+                                                        ApiServiceForCancelOrders.cancel(orders.orders[index].id.toString()).then((value) => {
+                                                          if(value==true){
+                                                            print("ORDER Cancelled")
+                                                          }
+                                                          else{
+                                                            print("Not Cancelled")
+                                                          }
+                                                        });
+                                                      }
+
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        primary: Color(0xffFFFFFF),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                                32))),
+                                                    child: Text(
+                                                      "Decline",
+                                                      style: TextStyle(
+                                                          fontSize: 9,
+                                                          color: Color(0xff9C3587)),
+                                                    )),
+                                              ):SizedBox(),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            "assets/home pic.jpg"),
+                                                        fit: BoxFit.cover),
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(7),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Colors.grey,
+                                                          blurRadius: 3,
+                                                          offset: Offset(1.0, 2.0))
+                                                    ]),
+                                                height: 20,
+                                                width: 20,
+                                              ),
+// Image.asset("assets/download-23.png",fit: BoxFit.scaleDown,height: 35,),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
                 }
               },
             )

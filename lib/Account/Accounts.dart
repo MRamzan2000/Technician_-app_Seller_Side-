@@ -470,9 +470,21 @@ class _AccountsState extends State<Accounts> {
                                                         "city": dropdownValue.toString(),
                                                         "dateofbirth": "dateofbirth",
                                                       };
-                                                      await ApiServiceForUpdateUserInfo.UpdateUserInfo(body);
+                                                      await ApiServiceForUpdateUserInfo.UpdateUserInfo(body).then((value) =>
+                                                      {
+                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      content: const Text('Updated Successfully'),
+                                                      duration: const Duration(seconds: 1),
+                                                      // action: SnackBarAction(
+                                                      // label: 'ACTION',
+                                                      // onPressed: () { },
+                                                      // )
+                                                      )
+                                                      )
+                                                      });
                                                       setState(() {
 
+                                                        initialize();
                                                       });
                                                       Navigator.pop(context);
                                                     },

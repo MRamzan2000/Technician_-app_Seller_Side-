@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:technician_seller_side/temp.dart';
 import 'Person_1.dart';
-
 class Messages extends StatelessWidget {
   const Messages({Key? key}) : super(key: key);
 
@@ -89,7 +88,7 @@ class Messages extends StatelessWidget {
             onTap: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
-                return Person_1();
+                return ChatScreen(myUserId: '12',otherUserId: '21',);
               }));
             },
             child: Container(
