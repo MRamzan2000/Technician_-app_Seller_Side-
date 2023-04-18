@@ -17,6 +17,7 @@ import '../Notification/Notifications.dart';
 import 'package:http/http.dart' as http;
 
 import '../const.dart';
+import '../temp.dart';
 
 class Active_Orders extends StatefulWidget {
   const Active_Orders({Key? key}) : super(key: key);
@@ -31,11 +32,11 @@ class _Active_OrdersState extends State<Active_Orders> {
     super.initState();
     initialize();
     Timer.periodic(Duration(seconds: 3), (timer) {
-      getCryptoPrice();
+      getActiveOrders();
     });
   }
 
-  Future<void> getCryptoPrice() async{
+  Future<void> getActiveOrders() async{
     OrderList dataModel = await ApiServiceForSellerOrders.sellerOrders() as OrderList;
     setState(() {
       orders_length=dataModel.orders.length;
@@ -57,6 +58,7 @@ class _Active_OrdersState extends State<Active_Orders> {
   String? createdAt;
   String? email;
   String? type;
+  String? id;
 
   void initialize() async {
     final prefs = await SharedPreferences.getInstance();
@@ -67,17 +69,8 @@ class _Active_OrdersState extends State<Active_Orders> {
     createdAt = createdAt!.substring(0, 10);
     email = prefs.getString('email').toString();
     type = prefs.getString('type').toString();
+    id = prefs.getString('id').toString();
     setState(() {});
-  }
-
-  Stream<OrderList> getOrderStream() async* {
-    try {
-      final OrderList orders =
-          (await ApiServiceForSellerOrders.sellerOrders())  ;
-      yield orders;
-    } catch (e) {
-      print(e);
-    }
   }
   int orders_length=0;
 
@@ -673,7 +666,6 @@ class _Active_OrdersState extends State<Active_Orders> {
                   default: if(snapdata.hasError){
                     return Text('Please Wait....');
                   }else{
-                    print("{HELLO");
                     final OrderList orders = snapdata.data!;
                     return Expanded(
                       child: ListView.builder(
@@ -702,7 +694,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                             blurRadius: 2,
                                             offset: Offset(1.0, 2.0))
                                       ]),
-                                  height: 100,
+                                  height: 120,
                                   width: MediaQuery.of(context).size.width / 4,
                                   child: SvgPicture.asset(
                                     "assets/Fan.svg",
@@ -719,7 +711,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                             blurRadius: 2,
                                             offset: Offset(1.0, 2.0))
                                       ]),
-                                  height: 100,
+                                  height: 120,
                                   width: MediaQuery.of(context).size.width / 1.6,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 15),
@@ -739,22 +731,30 @@ class _Active_OrdersState extends State<Active_Orders> {
                                                     fontSize: 12,
                                                     color: Colors.black),
                                               ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(7),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.grey,
-                                                          blurRadius: 3,
-                                                          offset: Offset(1.0, 2.0))
-                                                    ]),
-                                                height: 20,
-                                                width: 20,
-                                                child: SvgPicture.asset(
-                                                  "assets/Iconly-Bold-Call.svg",
-                                                  fit: BoxFit.scaleDown,
+                                              IconButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                                                    return ChatScreen(myUserId: id.toString(),otherUserId: orders.orders[index].customerId,);
+                                                  }));
+                                                },
+                                                icon: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                      BorderRadius.circular(7),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color: Colors.grey,
+                                                            blurRadius: 3,
+                                                            offset: Offset(1.0, 2.0))
+                                                      ]),
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: SvgPicture.asset(
+                                                    "assets/Iconly-Bold-Call.svg",
+                                                    fit: BoxFit.scaleDown,
+                                                  ),
                                                 ),
                                               ),
                                             ],

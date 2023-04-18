@@ -220,9 +220,9 @@ class _Sign_UpState extends State<Sign_Up> {
                         });
                         Map<String, dynamic> body = {
 
-                            "firstname": "inzmam",
-                            "lastname": "khan",
-                            "email": "a@gmail.com",
+                            "firstname": "Muhammad",
+                            "lastname": "Faizan",
+                            "email": "immuhammadfaizan@gmail.com",
                             "password": "password",
                             "phonenumber": "phonenumber",
                             "city": "lahrioe",

@@ -42,6 +42,7 @@ dependencies:
   google_maps_flutter: ^0.5.21+8
   location:
   geolocator:
+  intl: ^0.18.0
   google_maps_webservice: ^0.0.19
   pin_code_text_field:
   sliding_up_panel:

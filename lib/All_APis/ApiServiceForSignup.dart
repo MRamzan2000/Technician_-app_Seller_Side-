@@ -1,8 +1,6 @@
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:technician_seller_side/Models/Orders.dart';
-import 'package:technician_seller_side/Models/SellerInfoGet.dart';
 import 'package:technician_seller_side/Models/SellerLogOut.dart';
 import 'package:technician_seller_side/Models/SellerSignIn.dart';
 import 'dart:convert';

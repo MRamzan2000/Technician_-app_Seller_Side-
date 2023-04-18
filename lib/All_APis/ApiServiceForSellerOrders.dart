@@ -23,7 +23,6 @@ class ApiServiceForSellerOrders {
     final String res = response.body;
     if (res != 'null') {
       try {
-        print(res);
         final jsonData = json.decode(res);
         if (jsonData is List) {
           return OrderList.fromJson(jsonData);
