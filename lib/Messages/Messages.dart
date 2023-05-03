@@ -52,7 +52,7 @@ class _MessagesState extends State<Messages> {
 
   Future<LastMessages> fetchLastMessages(String senderId) async {
     final response = await http.get(
-      Uri.parse('http://localhost:3000/receivers/${id}'),
+      Uri.parse('https://seahorse-app-cvm3d.ondigitalocean.app/receivers/${id}'),
       headers: {"Content-Type": "application/json"},
     );
 
@@ -78,6 +78,7 @@ class _MessagesState extends State<Messages> {
         '_id': messageData['_id'],
         'text': messageData['text'],
         'createdAt': messageData['createdAt'],
+        'receiverName': messageData['receiverName'],
       };
       messagesList.add(messageMap);
     }
@@ -184,7 +185,7 @@ class _MessagesState extends State<Messages> {
                             onTap: () async{
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (BuildContext context) {
-                                return ChatScreen(myUserId: id.toString(),otherUserId: "${chats[index].receiverId}",);
+                                return ChatScreen(myUserId: id.toString(),otherUserId: "${chats[index].receiverId}", name:"${chats[index].receiverName}" ,);
                               }));
                             },
                             child: Container(
@@ -229,7 +230,7 @@ class _MessagesState extends State<Messages> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${chats[index].receiverId}",
+                                              "${chats[index].receiverName}",
                                               style: TextStyle(
                                                   fontSize: 16, color: Color(0xff3D3D3D)),
                                             ),

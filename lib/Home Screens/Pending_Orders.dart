@@ -417,11 +417,11 @@ class Pending_Orders extends StatelessWidget {
                               height: 20,
                               child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                      return Order_Detail();
-                                    }));
+                                    // Navigator.of(context).push(
+                                    //     MaterialPageRoute(
+                                    //         builder: (BuildContext context) {
+                                    //   return Order_Detail();
+                                    // }));
                                   },
                                   style: ElevatedButton.styleFrom(
                                       primary: Color(0xff9C3587),

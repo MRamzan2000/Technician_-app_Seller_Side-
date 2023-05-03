@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:technician_seller_side/All_APis/ApiServiceForSignup.dart';
-import 'package:technician_seller_side/Home%20Screens/Active_Orders.dart';
 import 'package:technician_seller_side/Sign%20Up/Sign_Up.dart';
 
 import '../All_APis/ApiServiceForGettingUserInfo.dart';
@@ -18,6 +17,9 @@ class Sign_in extends StatefulWidget {
 }
 
 class _Sign_inState extends State<Sign_in> {
+
+  TextEditingController email = TextEditingController();
+  TextEditingController pass = TextEditingController();
   bool _loading = false;
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class _Sign_inState extends State<Sign_in> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
+                    controller: email,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 20),
                         hintText: "Email ID",
@@ -52,6 +55,8 @@ class _Sign_inState extends State<Sign_in> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
+                    obscureText: true ,
+                    controller: pass,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(top: 20),
                         hintText: "Password",
@@ -83,8 +88,8 @@ class _Sign_inState extends State<Sign_in> {
                           _loading = true;
                         });
                         Map<String, dynamic> body = {
-                          "email": "immuhammadfaizan@gmail.com",
-                          "password": "password",
+                          "email": email.text,
+                          "password": pass.text,
                         };
                         ApiServiceForSignup.signin(body).then((value) async{
                           if (value.riderId != null) {

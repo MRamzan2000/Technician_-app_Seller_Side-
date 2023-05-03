@@ -1,1 +1,1 @@
-const baseUrl = 'http://localhost:8000/';
+const baseUrl = 'https://seahorse-app-cvm3d.ondigitalocean.app/';

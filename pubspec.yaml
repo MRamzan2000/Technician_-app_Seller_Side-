@@ -39,17 +39,20 @@ dependencies:
   http: ^0.13.5
   shared_preferences: ^2.1.0
   modal_progress_hud_nsn: ^0.4.0
-  google_maps_flutter: ^0.5.21+8
+  google_maps_flutter:
   location:
   geolocator:
   intl: ^0.18.0
-  google_maps_webservice: ^0.0.19
+  flutter_image: ^4.1.5
+  google_maps_flutter_web:
   pin_code_text_field:
   sliding_up_panel:
   carousel_slider:
   connectivity:
   flutter_spinkit:
   socket_io_client:
+  twilio_flutter: ^0.0.9
+
 
 dev_dependencies:
   flutter_test:

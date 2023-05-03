@@ -1,24 +1,20 @@
 import 'dart:async';
-import 'dart:convert';
-
+import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_seller_side/All_APis/ApiServiceForSignup.dart';
-import 'package:technician_seller_side/Order%20Detail/Order_Detail.dart';
 import 'package:technician_seller_side/Sign_In/Sign_in.dart';
 import 'package:technician_seller_side/Type%20of%20work/Type_of_work.dart';
 import '../All_APis/ApiServiceForAcceptOrders.dart';
 import '../All_APis/ApiServiceForCancelOrder.dart';
 import '../All_APis/ApiServiceForSellerOrders.dart';
 import '../Models/Orders.dart';
-import '../Notification/Notifications.dart';
-import 'package:http/http.dart' as http;
-
-import '../const.dart';
+import '../Order Detail/Order_Detail.dart';
 import '../temp.dart';
-
+import 'package:flutter_image/flutter_image.dart';
 class Active_Orders extends StatefulWidget {
   const Active_Orders({Key? key}) : super(key: key);
 
@@ -78,12 +74,12 @@ class _Active_OrdersState extends State<Active_Orders> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(topRight: Radius.circular(100))),
         child: Column(
           children: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Color(0xff653780),
                   borderRadius:
                       BorderRadius.only(topRight: Radius.circular(100)),
@@ -118,7 +114,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(32),
@@ -131,9 +127,9 @@ class _Active_OrdersState extends State<Active_Orders> {
                                       padding: const EdgeInsets.only(left: 60),
                                       child: Center(
                                         child: Text(
-                                          "${firstname} ${lastname}",
+                                          "$firstname $lastname",
                                           // textAlign: TextAlign.right,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.black,
                                           ),
@@ -451,10 +447,10 @@ class _Active_OrdersState extends State<Active_Orders> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Notifications();
-                              }));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (BuildContext context) {
+                              //   return Notifications();
+                              // }));
                             },
                             child: Container(
                                 decoration: BoxDecoration(
@@ -701,175 +697,169 @@ class _Active_OrdersState extends State<Active_Orders> {
                                     fit: BoxFit.scaleDown,
                                   ),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 2,
-                                            offset: Offset(1.0, 2.0))
-                                      ]),
-                                  height: 120,
-                                  width: MediaQuery.of(context).size.width / 1.6,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 15),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 5),
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                orders.orders[index].username.toString(),
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.black),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                                                    return ChatScreen(myUserId: id.toString(),otherUserId: orders.orders[index].customerId,);
-                                                  }));
-                                                },
-                                                icon: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                      BorderRadius.circular(7),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color: Colors.grey,
-                                                            blurRadius: 3,
-                                                            offset: Offset(1.0, 2.0))
-                                                      ]),
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: SvgPicture.asset(
-                                                    "assets/Iconly-Bold-Call.svg",
-                                                    fit: BoxFit.scaleDown,
+                                InkWell(
+                                  onTap: (){
+                                   if( orders.orders[index].status=="New"){
+
+                                     // Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                                     //   return  Order_Detail(ammount: orders.orders[index].amount, type: orders.orders[index].type,);
+                                     // }));
+
+                                   }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.grey,
+                                              blurRadius: 2,
+                                              offset: Offset(1.0, 2.0))
+                                        ]),
+                                    height: 120,
+                                    width: MediaQuery.of(context).size.width / 1.6,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 5),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  orders.orders[index].username.toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(builder: (BuildContext context) {
+                                                      return ChatScreen(myUserId: id.toString(),otherUserId: orders.orders[index].customerId, name: orders.orders[index].username,);
+                                                    }));
+                                                  },
+                                                  icon: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                        BorderRadius.circular(7),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                              color: Colors.grey,
+                                                              blurRadius: 3,
+                                                              offset: Offset(1.0, 2.0))
+                                                        ]),
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Icon(
+                                                      Icons.chat
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Split Unit   =",
-                                              style: TextStyle(
-                                                  fontSize: 10, color: Colors.black),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              '${orders.orders[index].amount.toString()} SR',
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: Color(0xffF89F5B)),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "C-Block Johar Town near UMT\n ${date}  .  ${time}",
-                                          style: TextStyle(
-                                              fontSize: 10, color: Colors.grey),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                          Row(
                                             children: [
-                                              SizedBox(
-                                                width: 80,
-                                                height: 20,
-                                                child: ElevatedButton(
-                                                    onPressed: () {
-                                                      if(orders.orders[index].status=="New"){
-                                                        ApiServiceForAcceptOrders.accept(orders.orders[index].id.toString()).then((value) => {
-                                                          if(value==true){
-                                                            print("ORDER ACCEPTED")
-                                                          }
-                                                          else{
-                                                            print("Not accepted")
-                                                          }
-                                                        });
-                                                      }
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary: Color(0xff9C3587),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                32))),
-                                                    child: Text(
-                                                      orders.orders[index].status=="New"?"Accept":"In Progress",
-                                                      style: TextStyle(
-                                                          fontSize: 9,
-                                                          color: Colors.white),
-                                                    )),
+                                              Text(
+                                                '${orders.orders[index].type.toString()}',
+                                                style: TextStyle(
+                                                    fontSize: 10, color: Colors.black),
                                               ),
-                                              orders.orders[index].status=="New"?SizedBox(
-                                                width: 80,
-                                                height: 20,
-                                                child: ElevatedButton(
-                                                    onPressed: () {
-                                                      if(orders.orders[index].status=="New"){
-                                                        ApiServiceForCancelOrders.cancel(orders.orders[index].id.toString()).then((value) => {
-                                                          if(value==true){
-                                                            print("ORDER Cancelled")
-                                                          }
-                                                          else{
-                                                            print("Not Cancelled")
-                                                          }
-                                                        });
-                                                      }
-
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary: Color(0xffFFFFFF),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                32))),
-                                                    child: Text(
-                                                      "Decline",
-                                                      style: TextStyle(
-                                                          fontSize: 9,
-                                                          color: Color(0xff9C3587)),
-                                                    )),
-                                              ):SizedBox(),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            "assets/home pic.jpg"),
-                                                        fit: BoxFit.cover),
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                    BorderRadius.circular(7),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.grey,
-                                                          blurRadius: 3,
-                                                          offset: Offset(1.0, 2.0))
-                                                    ]),
-                                                height: 20,
-                                                width: 20,
+                                              SizedBox(width: 8),
+                                              Text(
+                                                '${orders.orders[index].amount.toString()} SR',
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Color(0xffF89F5B)),
                                               ),
-// Image.asset("assets/download-23.png",fit: BoxFit.scaleDown,height: 35,),
                                             ],
                                           ),
-                                        )
-                                      ],
+                                          Text(
+                                            "C-Block Johar Town near UMT\n ${date}  .  ${time}",
+                                            style: TextStyle(
+                                                fontSize: 10, color: Colors.grey),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                SizedBox(
+                                                  width: 80,
+                                                  height: 20,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        if(orders.orders[index].status=="New"){
+                                                          ApiServiceForAcceptOrders.accept(orders.orders[index].id.toString()).then((value) => {
+                                                            if(value==true){
+                                                              print("ORDER ACCEPTED")
+                                                            }
+                                                            else{
+                                                              print("Not accepted")
+                                                            }
+                                                          });
+                                                        }
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary: Color(0xff9C3587),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  32))),
+                                                      child: Text(
+                                                        orders.orders[index].status=="New"?"Accept":"In Progress",
+                                                        style: TextStyle(
+                                                            fontSize: 9,
+                                                            color: Colors.white),
+                                                      )),
+                                                ),
+                                                orders.orders[index].status=="New"?SizedBox(
+                                                  width: 80,
+                                                  height: 20,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        if(orders.orders[index].status=="New"){
+                                                          ApiServiceForCancelOrders.cancel(orders.orders[index].id.toString()).then((value) => {
+                                                            if(value==true){
+                                                              print("ORDER Cancelled")
+                                                            }
+                                                            else{
+                                                              print("Not Cancelled")
+                                                            }
+                                                          });
+                                                        }
+
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary: Color(0xffFFFFFF),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  32))),
+                                                      child: Text(
+                                                        "Decline",
+                                                        style: TextStyle(
+                                                            fontSize: 9,
+                                                            color: Color(0xff9C3587)),
+                                                      )),
+                                                ):SizedBox(),
+
+
+// Image.asset("assets/download-23.png",fit: BoxFit.scaleDown,height: 35,),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 )
@@ -889,4 +879,7 @@ class _Active_OrdersState extends State<Active_Orders> {
       ),
     );
   }
+
+
+
 }

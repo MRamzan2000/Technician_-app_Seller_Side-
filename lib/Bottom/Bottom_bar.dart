@@ -18,7 +18,7 @@ class _Bottom_barState extends State<Bottom_bar> {
     Active_Orders(),
     Messages(),
     wallet(),
-    Accounts(),
+    Account(),
     Text(
       'Index 1: Home',
       // style: optionStyle,

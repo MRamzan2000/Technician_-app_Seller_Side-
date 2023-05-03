@@ -4,7 +4,11 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:technician_seller_side/Destination/Destination_House.dart';
 
 class Order_Detail extends StatefulWidget {
-  const Order_Detail({Key? key}) : super(key: key);
+  String ammount;
+  String type;
+
+  Order_Detail({Key? key, required this.ammount, required this.type})
+      : super(key: key);
 
   @override
   State<Order_Detail> createState() => _Order_DetailState();
@@ -12,6 +16,7 @@ class Order_Detail extends StatefulWidget {
 
 class _Order_DetailState extends State<Order_Detail> {
   bool _loading = false;
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -108,7 +113,7 @@ class _Order_DetailState extends State<Order_Detail> {
                   children: [
                     SizedBox(height: 15),
                     Text(
-                      "Split Unit Cleaning",
+                      widget.type,
                       style: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     SizedBox(height: 5),
@@ -126,9 +131,9 @@ class _Order_DetailState extends State<Order_Detail> {
                             style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
                           Text(
-                            "110 SR",
-                            style:
-                                TextStyle(fontSize: 18, color: Color(0xffFBBB8A)),
+                            widget.ammount,
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xffFBBB8A)),
                           ),
                         ],
                       ),
@@ -159,15 +164,25 @@ class _Order_DetailState extends State<Order_Detail> {
                               ]),
                           height: 40,
                           width: MediaQuery.of(context).size.width / 3.5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                "SR",
-                                style:
-                                    TextStyle(fontSize: 12, color: Colors.black),
-                              ),
+                          child: Expanded(
+                            child: Row(
+                              children: [
+                                TextField(
+                                  keyboardType: TextInputType.number,
+
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      "SR",
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -183,8 +198,8 @@ class _Order_DetailState extends State<Order_Detail> {
               height: 30,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (BuildContext context) {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
                       return Destination_House();
                     }));
                   },
