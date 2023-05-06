@@ -52,7 +52,7 @@ class _MessagesState extends State<Messages> {
 
   Future<LastMessages> fetchLastMessages(String senderId) async {
     final response = await http.get(
-      Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/receivers/${id}'),
+      Uri.parse('your url/receivers/${id}'),
       headers: {"Content-Type": "application/json"},
     );
 
