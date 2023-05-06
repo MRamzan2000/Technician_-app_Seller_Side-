@@ -9,6 +9,7 @@ import 'package:technician_seller_side/Home%20Screens/Active_Orders.dart';
 import 'package:technician_seller_side/Type%20of%20work/Selection.dart';
 
 import '../All_APis/ApiServiceForSignup.dart';
+import '../Sign_In/Sign_in.dart';
 
 class Type_of_work extends StatefulWidget {
   const Type_of_work({Key? key}) : super(key: key);
@@ -22,18 +23,19 @@ class _Type_of_workState extends State<Type_of_work> {
   bool PlumberServices = false;
   bool CoolingService = false;
   bool HeaterService = false;
-  String id="null";
+  String myid = "";
+
   @override
-  initState() {
+  void initState() {
     super.initState();
     initialize();
-    setState(() {
-
-    });
   }
-  void initialize()async{
+
+  void initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    id=await prefs.getString('id').toString();
+    setState(() {
+      myid = prefs.getString("id") ?? "";
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,7 @@ class _Type_of_workState extends State<Type_of_work> {
                     CoolingService = false;
                     HeaterService = false;
                   });
+
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -250,16 +253,17 @@ class _Type_of_workState extends State<Type_of_work> {
                       ApiServiceForSellerUpdateType.updateType(body).then((value) =>{
 
                         if(value=="Seller type updated successfully"){
-                          if(id=="null"){
+                          if(myid==""){
                             Navigator.of(context).push(
                                 MaterialPageRoute(builder: (BuildContext context) {
-                                  return Selection();
+                                  return const Sign_in();
                                 }))
                           }else{
                             Navigator.of(context).push(
                                 MaterialPageRoute(builder: (BuildContext context) {
-                                  return Bottom_bar();
-                                }))
+                                  return const Bottom_bar();
+                                })),
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('Service Changed Successfully!')))
                           }
                         }
                         else{

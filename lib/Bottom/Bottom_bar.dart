@@ -47,38 +47,44 @@ class _Bottom_barState extends State<Bottom_bar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Container(
-        height: 70,
-        color: Colors.black,
-        child: BottomNavigationBar(
-          // selectedItemColor: Colors.red,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/HOme.svg"),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/Bottom Chat.svg"),
-              label: 'Chat',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/Bottom wallet.svg"),
-              label: 'Wallet',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/Bottom Profile.svg"),
-              label: 'Account',
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Disable back button
+        return false;
+      },
+      child: Scaffold(
+        bottomNavigationBar: Container(
+          height: 70,
+          color: Colors.black,
+          child: BottomNavigationBar(
+            // selectedItemColor: Colors.red,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/HOme.svg"),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/Bottom Chat.svg"),
+                label: 'Chat',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/Bottom wallet.svg"),
+                label: 'Wallet',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/Bottom Profile.svg"),
+                label: 'Account',
+              ),
+            ],
+          ),
         ),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
       ),
     );
   }

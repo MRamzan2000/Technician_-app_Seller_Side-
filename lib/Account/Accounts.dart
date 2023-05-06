@@ -23,6 +23,7 @@ class _AccountState extends State<Account> {
   String? name;
   String? email;
   String? phonenumber;
+  String? dateofbirth;
   String? city;
 
 
@@ -42,6 +43,7 @@ class _AccountState extends State<Account> {
       lastname =prefs.getString("lastname").toString();
       email =prefs.getString("email").toString();
       phonenumber =prefs.getString("phonenumber").toString();
+      dateofbirth =prefs.getString("dateofbirth").toString();
 
     });
     setState(() {
@@ -308,7 +310,7 @@ class _AccountState extends State<Account> {
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(32))),
                                   child: Text(
-                                    "${dob}",
+                                    "${dateofbirth}",
                                     style: TextStyle(
                                         fontSize: 11, color: Color(0xff9C3587)),
                                   ))  ),
@@ -491,7 +493,6 @@ class _AccountState extends State<Account> {
   }
 
   DateTime _selectedDate=DateTime.now();
-  String dob='Date of Birth';
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -503,7 +504,7 @@ class _AccountState extends State<Account> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        dob = DateFormat('yyyy-MM-dd').format(_selectedDate);
+        dateofbirth = DateFormat('yyyy-MM-dd').format(_selectedDate);
         setState(() {
 
         });

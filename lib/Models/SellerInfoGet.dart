@@ -11,7 +11,7 @@ class UserInfo {
   final String? updatedAt;
   final String? type;
 
-  UserInfo({
+  UserInfo( {
     this.id,
     this.firstName,
     this.lastName,

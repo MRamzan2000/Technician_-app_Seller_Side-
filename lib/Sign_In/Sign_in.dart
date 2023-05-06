@@ -7,7 +7,7 @@ import 'package:technician_seller_side/Sign%20Up/Sign_Up.dart';
 
 import '../All_APis/ApiServiceForGettingUserInfo.dart';
 import '../Bottom/Bottom_bar.dart';
-import '../ForgotPass_verify_change_pass/ForgotPass.dart';
+import '../forgotpass_verify_pass/Forget_Password.dart';
 
 class Sign_in extends StatefulWidget {
   const Sign_in({Key? key}) : super(key: key);
@@ -72,7 +72,7 @@ class _Sign_inState extends State<Sign_in> {
                         child : Text("Forgot Password",style: TextStyle(fontSize: 8, color: Colors.black), ),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                            return ForgotPassword();
+                            return Forget_Password();
                           }));
 
                         },
@@ -91,14 +91,15 @@ class _Sign_inState extends State<Sign_in> {
                           "email": email.text,
                           "password": pass.text,
                         };
+                        print(1);
                         ApiServiceForSignup.signin(body).then((value) async{
                           if (value.riderId != null) {
                             print(value.riderId);
                             await ApiServiceForGettingUserInfo.GetUserInfo();
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (BuildContext context) {
-                                  return Bottom_bar();
-                                }));
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => Bottom_bar()),
+                            );
                             setState(() {
                               _loading = false;
                             });

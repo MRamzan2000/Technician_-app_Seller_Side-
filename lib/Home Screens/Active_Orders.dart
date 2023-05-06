@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoder/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_seller_side/All_APis/ApiServiceForSignup.dart';
 import 'package:technician_seller_side/Sign_In/Sign_in.dart';
@@ -11,10 +13,11 @@ import 'package:technician_seller_side/Type%20of%20work/Type_of_work.dart';
 import '../All_APis/ApiServiceForAcceptOrders.dart';
 import '../All_APis/ApiServiceForCancelOrder.dart';
 import '../All_APis/ApiServiceForSellerOrders.dart';
+import '../All_APis/RequestAmount.dart';
+import '../Map/map.dart';
 import '../Models/Orders.dart';
 import '../Order Detail/Order_Detail.dart';
 import '../temp.dart';
-import 'package:flutter_image/flutter_image.dart';
 class Active_Orders extends StatefulWidget {
   const Active_Orders({Key? key}) : super(key: key);
 
@@ -23,29 +26,45 @@ class Active_Orders extends StatefulWidget {
 }
 
 class _Active_OrdersState extends State<Active_Orders> {
+
+  Timer? _timer;
+  String earnings = " 0";
+
   @override
-  initState() {
+  void initState() {
     super.initState();
     initialize();
-    Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       getActiveOrders();
     });
+    print(earnings);
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel(); // cancel the timer
+    _streamController.close();
+  }
+
+
+  StreamController<OrderList> _streamController = StreamController();
+
 
   Future<void> getActiveOrders() async{
     OrderList dataModel = await ApiServiceForSellerOrders.sellerOrders() as OrderList;
+     await ApiServiceForAmount.getEarnings(id!).then((value) => {
+       if(value.message != "") {
+
+         earnings = value.message!,
+       }
+
+     });
     setState(() {
       orders_length=dataModel.orders.length;
 
     });
     _streamController.sink.add(dataModel);
-  }
-
-  StreamController<OrderList> _streamController = StreamController();
-  @override
-  void dispose() {
-    // stop streaming when app close
-    _streamController.close();
   }
 
   String? firstname;
@@ -55,10 +74,15 @@ class _Active_OrdersState extends State<Active_Orders> {
   String? email;
   String? type;
   String? id;
+  String? address;
 
   void initialize() async {
     final prefs = await SharedPreferences.getInstance();
     firstname = prefs.getString('firstname').toString();
+    if(prefs.getString('address')==null){
+      address = prefs.getString('address').toString();
+
+    }
     lastname = prefs.getString('lastname').toString();
     city = prefs.getString('city').toString();
     createdAt = prefs.getString('createdAt').toString();
@@ -72,6 +96,7 @@ class _Active_OrdersState extends State<Active_Orders> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       drawer: Drawer(
         shape: const RoundedRectangleBorder(
@@ -419,38 +444,30 @@ class _Active_OrdersState extends State<Active_Orders> {
                                   ),
                                 );
                               })),
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Your Location",
-                                    style: TextStyle(
-                                        fontSize: 11, color: Colors.grey),
-                                  ),
-                                  SizedBox(width: 5),
-                                  SvgPicture.asset("assets/drop down arrow.svg")
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Image.asset("assets/pngwing.com (13).png"),
-                                  // SizedBox(width: 5),
-                                  Text(
-                                    "Al Balad",
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ],
+                          InkWell(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const MapSample();
+                              }));
+                            },
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Your Location",
+                                      style: TextStyle(
+                                          fontSize: 11, color: Colors.grey),
+                                    ),
+                                    SizedBox(width: 5),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           InkWell(
                             onTap: () {
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (BuildContext context) {
-                              //   return Notifications();
-                              // }));
                             },
                             child: Container(
                                 decoration: BoxDecoration(
@@ -495,7 +512,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                             border: Border.all(
                                                 color: Color(0xff653780),
                                                 width: 1.0),
-                                            image: DecorationImage(
+                                            image: const DecorationImage(
                                                 fit: BoxFit.cover,
                                                 image: AssetImage(
                                                     "assets/pic.jpg")),
@@ -584,7 +601,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                               color: Color(0xffF89F5B)),
                                         ),
                                         Text(
-                                          "2564 SR",
+                                          earnings + " SR",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.black),
@@ -667,12 +684,9 @@ class _Active_OrdersState extends State<Active_Orders> {
                       child: ListView.builder(
                         itemCount: orders.orders.length,
                         itemBuilder: (BuildContext context, int index) {
-
                           String date = orders.orders[index].date.toString().split(':')[0];
                           String time = orders.orders[index].time.toString();
                           time = time.split('.')[0];
-
-// Build and return the list item
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                             child: Row(
@@ -690,7 +704,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                             blurRadius: 2,
                                             offset: Offset(1.0, 2.0))
                                       ]),
-                                  height: 120,
+                                  height: 125,
                                   width: MediaQuery.of(context).size.width / 4,
                                   child: SvgPicture.asset(
                                     "assets/Fan.svg",
@@ -701,23 +715,25 @@ class _Active_OrdersState extends State<Active_Orders> {
                                   onTap: (){
                                    if( orders.orders[index].status=="New"){
 
-                                     // Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                                     //   return  Order_Detail(ammount: orders.orders[index].amount, type: orders.orders[index].type,);
-                                     // }));
+                                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                                       return  Order_Detail(ammount: orders.orders[index].amount, type: orders.orders[index].type, id: orders.orders[index].id, updatedammount:orders.orders[index].updatedamount,);
+                                     }));
 
                                    }
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: orders.orders[index].updatedamount == null
+                                            ? Colors.white
+                                            : Colors.red.shade100,
                                         borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
                                               color: Colors.grey,
                                               blurRadius: 2,
                                               offset: Offset(1.0, 2.0))
                                         ]),
-                                    height: 120,
+                                    height: 130,
                                     width: MediaQuery.of(context).size.width / 1.6,
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 15),
@@ -782,7 +798,7 @@ class _Active_OrdersState extends State<Active_Orders> {
                                             ],
                                           ),
                                           Text(
-                                            "C-Block Johar Town near UMT\n ${date}  .  ${time}",
+                                            "${orders.orders[index].address}\n ${date}  .  ${time}",
                                             style: TextStyle(
                                                 fontSize: 10, color: Colors.grey),
                                           ),
@@ -798,12 +814,17 @@ class _Active_OrdersState extends State<Active_Orders> {
                                                   height: 20,
                                                   child: ElevatedButton(
                                                       onPressed: () {
+                                                        print(orders.orders[index].status);
                                                         if(orders.orders[index].status=="New"){
                                                           ApiServiceForAcceptOrders.accept(orders.orders[index].id.toString()).then((value) => {
                                                             if(value==true){
+                                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('ORDER ACCEPTED Successfully!'))),
+
                                                               print("ORDER ACCEPTED")
                                                             }
                                                             else{
+                                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('ORDER  ACCEPTED Failed!'))),
+
                                                               print("Not accepted")
                                                             }
                                                           });
@@ -830,9 +851,13 @@ class _Active_OrdersState extends State<Active_Orders> {
                                                         if(orders.orders[index].status=="New"){
                                                           ApiServiceForCancelOrders.cancel(orders.orders[index].id.toString()).then((value) => {
                                                             if(value==true){
+                                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('ORDER Cancelled!'))),
+
                                                               print("ORDER Cancelled")
                                                             }
                                                             else{
+                                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('ORDER Cancellation Failed!'))),
+
                                                               print("Not Cancelled")
                                                             }
                                                           });

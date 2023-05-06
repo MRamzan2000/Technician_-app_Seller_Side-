@@ -14,7 +14,9 @@ class ApiServiceForAcceptOrders {
       'Authorization': 'Bearer $token',
     });
     final String res = response.body;
+    print(res);
     if (res != 'null') {
+      print(res);
       try {
         final jsonData = json.decode(res);
         if(jsonData['message']=='Order successfully accepted'){

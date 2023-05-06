@@ -9,11 +9,14 @@ class Order {
   final String time;
   final List<int> image;
   final String amount;
+  final String updatedamount;
+  final String address;
   final String status;
   final DateTime timestamp;
   final String username;
 
-  Order({
+  Order( {
+    required this.address,
     required this.username,
     required this.id,
     required this.customerId,
@@ -24,6 +27,9 @@ class Order {
     required this.time,
     required this.image,
     required this.amount,
+    required this.updatedamount,
+
+
     required this.status,
     required this.timestamp,
   });
@@ -42,6 +48,7 @@ class Order {
       amount: json['amount'],
       status: json['status'],
       timestamp: DateTime.parse(json['timestamp']),
+      updatedamount: json["updatedAmount"], address: json["address"],
     );
   }
 }

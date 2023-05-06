@@ -67,6 +67,14 @@ class  ApiServiceForSignup {
         final prefs = await SharedPreferences.getInstance();
         prefs.remove('id');
         prefs.remove('token');
+        prefs.remove('email');
+        prefs.remove('firstname');
+        prefs.remove('lastname');
+        prefs.remove('phonenumber');
+        prefs.remove('city');
+        prefs.remove('dateofbirth');
+        prefs.remove('createdAt');
+        prefs.remove('type');
         return LogOutModel.fromJson(jsonData);
       } catch (e) {}
     }

@@ -11,7 +11,8 @@ class ForgotPasswordModel {
       );
     }
     return ForgotPasswordModel(
-      message: json['message'],
+      message: json['message'] ,
+
     );
   }
 }
