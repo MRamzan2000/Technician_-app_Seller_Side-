@@ -80,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
       // Configure socket transports must be specified
       socket = IO.io('https://dolphin-app-ldyyx.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
     } catch (e) {
-      print("hello");
+      // print("hello");
       print(e.toString());
     }
   }
@@ -122,14 +122,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _handleIncomingMessage(data) {
-    print("Coming:${data}");
+    // print("Coming:${data}");
     setState(() {
       Map<String, String> message = {
         'senderId': data['senderId'],
         'receiverId': data['receiverId'],
         'text': data['text'].toString(),
       };
-      print(message);
+      // print(message);
       if(message['senderId']!=widget.myUserId){
         _messages.insert(0, message);
       }
@@ -145,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'text': text,
         'roomId':roomId
       };
-      print("hellll${message}");
+      // print("hellll${message}");
       socket.emit('message', message);
       setState(() {
         // Add the new message to the beginning of the list
