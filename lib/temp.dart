@@ -36,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       try {
         final response = await http.get(
-          Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/messages/${widget.myUserId}/${widget.otherUserId}/$_page/?lastMessageId=$_lastMessageId'),
+          Uri.parse('your url/messages/${widget.myUserId}/${widget.otherUserId}/$_page/?lastMessageId=$_lastMessageId'),
           headers: {"Content-Type": "application/json"},
         );
         final data = jsonDecode(response.body);
@@ -78,7 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void connectToServer() {
     try {
       // Configure socket transports must be specified
-      socket = IO.io('https://dolphin-app-ldyyx.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
+      socket = IO.io('your url/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
     } catch (e) {
       // print("hello");
       print(e.toString());
