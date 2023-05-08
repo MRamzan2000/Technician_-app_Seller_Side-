@@ -181,69 +181,72 @@ class _MessagesState extends State<Messages> {
                           final timestamp = chats[index].createdAt;
                           final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp!);
                           final formattedDateTime = DateFormat('MMM dd, yyyy hh:mm a').format(dateTime);
-                          return InkWell(
-                            onTap: () async{
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                                return ChatScreen(myUserId: id.toString(),otherUserId: "${chats[index].receiverId}", name:"${chats[index].receiverName}" ,);
-                              }));
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey, blurRadius: 3, offset: Offset(1.0, 2.0))
-                              ]),
-                              height: 85,
-                              width: MediaQuery.of(context).size.width,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 3),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Text(
-                                        "${formattedDateTime}",
-                                        style:
-                                        TextStyle(fontSize: 12, color: Color(0xff3D3D3D)),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage("assets/pic.jpg")),
-                                              borderRadius: BorderRadius.circular(100),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color(0xff2F62BB),
-                                                  blurRadius: 2,
-                                                )
-                                              ]),
-                                          height: 50,
-                                          width: 50,
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: InkWell(
+                              onTap: () async{
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                                  return ChatScreen(myUserId: id.toString(),otherUserId: "${chats[index].receiverId}", name:"${chats[index].receiverName}" ,);
+                                }));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey, blurRadius: 3, offset: Offset(1.0, 2.0))
+                                ]),
+                                height: 85,
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 3),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Text(
+                                          "${formattedDateTime}",
+                                          style:
+                                          TextStyle(fontSize: 12, color: Color(0xff3D3D3D)),
                                         ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "${chats[index].receiverName}",
-                                              style: TextStyle(
-                                                  fontSize: 16, color: Color(0xff3D3D3D)),
-                                            ),
-                                            Text(
-                                              "${chats[index].text}",
-                                              style:
-                                              TextStyle(fontSize: 12, color: Colors.black),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: AssetImage("assets/pic.jpg")),
+                                                borderRadius: BorderRadius.circular(100),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0xff2F62BB),
+                                                    blurRadius: 2,
+                                                  )
+                                                ]),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "${chats[index].receiverName}",
+                                                style: TextStyle(
+                                                    fontSize: 16, color: Color(0xff3D3D3D)),
+                                              ),
+                                              Text(
+                                                "${chats[index].text}",
+                                                style:
+                                                TextStyle(fontSize: 12, color: Colors.black),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
