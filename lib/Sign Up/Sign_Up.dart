@@ -3,12 +3,16 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:location/location.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_seller_side/All_APis/ApiServiceForSignup.dart';
 import 'package:intl/intl.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
 
+import '../Map/map.dart';
 import '../Sign_In/Sign_in.dart';
 import 'Verify.dart';
 
@@ -20,10 +24,19 @@ class Sign_Up extends StatefulWidget {
 }
 
 class _Sign_UpState extends State<Sign_Up> {
+  double latitude = 0.0;
+  double longitude = 0.0;
+  final Location location = Location();
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
 
   late TwilioFlutter twilioFlutter;
   @override
   void initState() {
+
+
+    inititialize();
     firstname = TextEditingController();
     lastname = TextEditingController();
     email = TextEditingController();
@@ -36,7 +49,139 @@ class _Sign_UpState extends State<Sign_Up> {
         twilioNumber: "+15856321097"
     );
     super.initState();
+
+    inititialize();
   }
+  String myid = "";
+  int n=-1;
+
+  String _address="No Address";
+
+
+  Future<void> _checkLocationPermission() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Getting Your Location Please Wait!'),
+      ),
+    );
+    setState(() {
+      _loading = true;
+    });
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    bool locationObtained = false;
+    while (!locationObtained) {
+      try {
+        _locationData = await location.getLocation();
+        longitude = _locationData.longitude!;
+        latitude = _locationData.latitude!;
+        final coordinates = Coordinates(latitude, longitude);
+        var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var first = addresses.first;
+        final prefs = await SharedPreferences.getInstance();
+        setState(() {
+          print("lat : "  + latitude.toString());
+          print("lot: " + longitude.toString());
+          _address = "${first.addressLine}";
+          prefs.setString('address', first.addressLine);
+          print(_address);
+        });
+        upload();
+
+        locationObtained = true;
+      } catch (e) {
+        // Location not obtained, retrying...
+        print(e);
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
+
+
+  }
+
+  upload(){
+    setState(() {
+
+      _loading  =true;
+    });
+    Map<String, dynamic> body = {
+
+      "firstname": firstname.text,
+      "lastname": lastname.text,
+      "email": email.text,
+      "password": password.text,
+      "phonenumber": phone.text,
+      "city": city,
+      "dateofbirth": dob.toString(),
+      "idofiqama": id.text
+
+
+    };
+    ApiServiceForSignup.signup(body).then((value) => {
+
+      if(value.message  == "Seller created successfully"){
+
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) {
+              return MapSample(lat: latitude, long: longitude,);
+            })),
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar( content: Text('Seller Created Successfuly!'), )),
+        setState(() {
+
+          _loading  =false;
+        })
+
+
+      }
+
+      else{
+        setState(() {
+
+          _loading  =false;
+        }),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: value.error == null ? Text(value.message.toString()) : Text(value.error.toString()),
+            content: Text(value.message.toString()),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Ok"),
+              ),
+            ],
+          ),
+        )
+      }
+    });
+  }
+
+  inititialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      myid = prefs.getString("id") ?? "";
+    });
+  }
+
   String? validateRequired(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill all required fields';
@@ -251,16 +396,18 @@ class _Sign_UpState extends State<Sign_Up> {
                   width: 130,
                   height: 30,
                   child: ElevatedButton(
-                      onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      sendSms();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Otp(code: numbber.toString(), firstname: firstname.text, lastname:  lastname.text, email: email.text, pass: password.text, phone: phone.text, city:city.toString(), dob: dob.toString(), id: id.text.toString(),);
-                          }));
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+
+                          if(_address=="No Address"){
+
+                             _checkLocationPermission();
 
 
-                    }
+                            n=0;
+                          }
+
+                        }
 
 
                       },

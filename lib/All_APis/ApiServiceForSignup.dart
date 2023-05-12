@@ -75,6 +75,7 @@ class  ApiServiceForSignup {
         prefs.remove('dateofbirth');
         prefs.remove('createdAt');
         prefs.remove('type');
+        prefs.remove('address');
         return LogOutModel.fromJson(jsonData);
       } catch (e) {}
     }

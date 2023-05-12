@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.technician_seller_side">
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
@@ -9,6 +11,8 @@
         android:label="technician_seller_side"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyCs_jvLKHzv8poFZmtTO15y1csL746lJw4"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,7 +42,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
        <meta-data
-           android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyAsIH6fXUpjm0ChNkVOUBTJxjJYEAGcBYE" />
+           android:name="com.google.android.gms.version"
+           android:value="@integer/google_play_services_version" />
+
     </application>
 </manifest>

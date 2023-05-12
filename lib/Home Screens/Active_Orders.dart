@@ -226,22 +226,6 @@ class _Active_OrdersState extends State<Active_Orders> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 25),
-              child: Row(
-                children: [
-                  SvgPicture.asset("assets/change service.svg"),
-                  SizedBox(width: 10),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Location",
-                      style: TextStyle(fontSize: 14, color: Color(0xff233245)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Container(
                 height: 0.5,
@@ -444,28 +428,28 @@ class _Active_OrdersState extends State<Active_Orders> {
                                   ),
                                 );
                               })),
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return const MapSample();
-                              }));
-                            },
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Your Location",
-                                      style: TextStyle(
-                                          fontSize: 11, color: Colors.grey),
-                                    ),
-                                    SizedBox(width: 5),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: (){
+                          //     Navigator.of(context).push(MaterialPageRoute(
+                          //         builder: (BuildContext context) {
+                          //       return const MapSample();
+                          //     }));
+                          //   },
+                          //   child: Column(
+                          //     children: [
+                          //       Row(
+                          //         children: [
+                          //           Text(
+                          //             "Your Location",
+                          //             style: TextStyle(
+                          //                 fontSize: 11, color: Colors.grey),
+                          //           ),
+                          //           SizedBox(width: 5),
+                          //         ],
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           InkWell(
                             onTap: () {
                             },

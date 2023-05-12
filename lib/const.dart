@@ -1,2 +1,1 @@
-
-const baseUrl = "your Url SIde";
+const baseUrl = "https://dolphin-app-ldyyx.ondigitalocean.app/";
